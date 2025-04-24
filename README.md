@@ -1,4 +1,4 @@
-# 💬 Product Review & PDF Chatbot with RAG and Streamlit
+# 💬 Product QA and Review Chatbot
 
 This project implements an interactive chatbot that provides answers based on customer product reviews and uploaded PDF documentation. It leverages advanced AI techniques, including **Retrieval-Augmented Generation (RAG)** using **Mistral-7B-Instruct-v0.3**, embeddings with **SentenceTransformers**, and document storage with **ChromaDB**.
 
@@ -6,21 +6,28 @@ This project implements an interactive chatbot that provides answers based on cu
 
 ## 🚀 Features
 
-- **Interactive Chatbot:** Ask questions based on product reviews or PDF documents.
-- **PDF Support:** Easily ingest and search through PDF documents.
-- **RAG-Based Answering:** Ensures accurate answers with reduced hallucinations.
-- **Quantized LLM (Mistral-7B):** Optimized for efficient inference on GPU.
+- ✅ **Ask questions** about any product based on review data or uploaded PDF manuals
+- 🧠 **Retrieval-Augmented Generation (RAG)** with accurate, context-grounded responses
+- 📄 **PDF Ingestion:** Extract and use text chunks for QA
+- 📁 **Switch Products:** Upload custom CSV & PDF to analyze new products
+- ⚡ **Efficient 4-bit LLM inference** with `BitsAndBytes` + `Mistral-7B`
+- 💬 **Conversation memory** and **source document tracing**
+- 📦 Clean **ChromaDB** integration with automatic document indexing
 
 ---
 
-## 🛠️ Technology Stack
+## 🛠️ Tech Stack
 
-- **Python:** Programming language.
-- **Streamlit:** Interactive web-based user interface.
-- **ChromaDB:** Vector database for efficient retrieval of embeddings.
-- **SentenceTransformers:** Generates high-quality embeddings.
-- **Hugging Face Transformers & BitsAndBytes:** To run quantized LLM efficiently.
-- **PyMuPDF (fitz):** Extract text from PDFs.
+| Layer            | Tool / Library                          |
+|------------------|------------------------------------------|
+| UI               | Streamlit                                |
+| Embeddings       | SentenceTransformers (BAAI BGE)          |
+| Reranker         | CrossEncoder (MS Marco MiniLM)           |
+| Language Model   | Mistral-7B-Instruct (via HuggingFace)    |
+| Quantization     | BitsAndBytes (4-bit inference)           |
+| Retrieval        | ChromaDB                                 |
+| PDF Parsing      | PyMuPDF (fitz)                           |
+
 
 ---
 
@@ -62,17 +69,36 @@ Open your browser and go to [http://localhost:8501](http://localhost:8501).
 
 ## 📝 How to Use
 
-- **Chatting:** Type questions directly into the Streamlit interface.
-- **Uploading PDFs:** Use the built-in PDF upload feature to add more product documentation dynamically.
-- **Exit Chat:** Simply stop the Streamlit server (`Ctrl+C`) in your terminal.
+- 💬 **Ask a Question:** Type your question in the chat input field and receive context-aware answers.
+- 📄 **Upload Extra PDFs:** Append PDF manuals to the existing product context using the sidebar.
+- 🔄 **Switch Product:** Upload a new CSV and optional PDF to reset and analyze a different product entirely.
+- 🧹 **Clear Chat:** Click the clear button to reset the conversation history.
+- 📎 **View Sources:** Toggle the checkbox to display the source documents used to generate the answer.
+
+---
+
+## 📂 Default Data
+
+By default, the app loads the following product context:
+
+- `sample.csv` — Amazon Tap product reviews  
+- `Amazon_Tap_Quick_Start_Guide.pdf` — Official product manual
+
+> 📌 To switch products, upload:
+> - A new CSV containing only the columns: `reviews.title` and `reviews.text`
+> - An optional new product PDF manual  
+> All data will be re-embedded and replace the current context.
 
 ---
 
 ## 🖥️ GPU Requirements
 
-This setup is tested on GPU environments (e.g., **NVIDIA A10G with ≥16GB VRAM**).
+This app is optimized for fast inference on GPU-equipped machines. Recommended specs:
 
-If you face GPU memory issues, modify the model load configuration in `app.py`:
+- ✅ **GPU:** NVIDIA A10G or better
+- ✅ **Memory:** ≥16GB VRAM
+
+To **force CPU mode**, modify the following line in `app.py`:
 
 ```python
 device_map="auto"  # Use device_map={"": "cpu"} to force CPU-only mode
